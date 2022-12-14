@@ -10,7 +10,7 @@ import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView res, cal;
+    TextView results, calculations;
     MaterialButton button_c;
     MaterialButton button_m, button_d, button_p, button_a, button_mi, button_e ;
     MaterialButton button_0, button_1, button_2, button_3, button_4, button_5, button_6, button_7, button_8, button_9;
@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        res=findViewById(R.id.result);
-        cal=findViewById(R.id.calc);
+        results=findViewById(R.id.result);
+        calculations=findViewById(R.id.calc);
 
         assignId(button_c, R.id.button_c);
         assignId(button_m, R.id.button_m);
@@ -47,150 +47,195 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn.setOnClickListener(this);
     }
 
-    int prev = 0 ; String p = "" ;
-    int next = 0 ; String n = "" ;
-    String c = "";
-    String r = "" ;
-    int re = 0 ;
+    int prevNumber = 0 ; String prevNumberString = "" ;
+    int nextNumber = 0 ; String nextNumberString = "" ;
+    String calculation = "";
+    String resultString = "" ;
+    int result = 0 ;
 
     @Override
     public void onClick(View view) {
         MaterialButton button = (MaterialButton) view ;
         String buttonText = button.getText().toString();
-        c += buttonText;
 
         if (buttonText.equals("C")){
-            cal.setText("");
-            res.setText("");
-            prev = 0; next = 0 ; c = "" ; re = 0 ; p = "" ; n = "" ; r = "" ;
+            calculations.setText("");
+            results.setText("");
+            prevNumber = 0; nextNumber = 0 ; calculation = "" ; result = 0 ; prevNumberString = "" ; nextNumberString = "" ; resultString = "" ;
             return;
         }
         else if (buttonText.equals("=")){
-            cal.setText(""); re = 0 ;
-            for (int i = 0 ; i < c.length() ; i++) {
-                if (c.charAt(i) == '^') {
-                    int j = i - 1 ; String x = "" ;
-                    while (j >= 0) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/') {
-                            break ;
+            calculations.setText(""); result = 0 ;
+            try {
+                for (int i = 0; i < calculation.length(); i++) {
+                    if (calculation.charAt(i) == '^') {
+                        int j = i - 1;
+                        String reversedNumber = "";
+                        while (j >= 0) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/') {
+                                break;
+                            }
+                            reversedNumber += calculation.charAt(j);
+                            j--;
                         }
-                        x += c.charAt(j) ; j-- ;
-                    }
-                    p = "" ;
-                    for (int k = x.length() - 1 ; k >= 0 ; k--) { p += x.charAt(k) ; }
-                    j = i + 1 ; n = "" ;
-                    while (j < c.length()) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/' || c.charAt(j) == '^' || c.charAt(j) == '=') {
-                            break ;
+                        prevNumberString = "";
+                        for (int k = reversedNumber.length() - 1; k >= 0; k--) {
+                            prevNumberString += reversedNumber.charAt(k);
                         }
-                        n += c.charAt(j) ; j++ ;
+                        j = i + 1;
+                        nextNumberString = "";
+                        while (j < calculation.length()) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/' || calculation.charAt(j) == '^') {
+                                break;
+                            }
+                            nextNumberString += calculation.charAt(j);
+                            j++;
+                        }
+                        prevNumber = Integer.parseInt(prevNumberString);
+                        nextNumber = Integer.parseInt(nextNumberString);
+                        result = (int) Math.pow(prevNumber, nextNumber);
+                        resultString = Integer.toString(result);
+                        calculation = calculation.replace(prevNumberString + "^" + nextNumberString, resultString);
                     }
-                    prev = Integer.parseInt(p) ; next = Integer.parseInt(n) ;
-                    re = (int)Math.pow(prev, next) ; r = Integer.toString(re) ;
-                    c = c.replace(p + "^" + n, r) ;
+                }
+                for (int i = 0; i < calculation.length(); i++) {
+                    if (calculation.charAt(i) == '/') {
+                        int j = i - 1;
+                        String reversedNumber = "";
+                        while (j >= 0) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/') {
+                                break;
+                            }
+                            reversedNumber += calculation.charAt(j);
+                            j--;
+                        }
+                        prevNumberString = "";
+                        for (int k = reversedNumber.length() - 1; k >= 0; k--) {
+                            prevNumberString += reversedNumber.charAt(k);
+                        }
+                        j = i + 1;
+                        nextNumberString = "";
+                        while (j < calculation.length()) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/' || calculation.charAt(j) == '^') {
+                                break;
+                            }
+                            nextNumberString += calculation.charAt(j);
+                            j++;
+                        }
+                        prevNumber = Integer.parseInt(prevNumberString);
+                        nextNumber = Integer.parseInt(nextNumberString);
+                        result = prevNumber / nextNumber;
+                        resultString = Integer.toString(result);
+                        calculation = calculation.replace(prevNumberString + "/" + nextNumberString, resultString);
+                    }
+                }
+                for (int i = 0; i < calculation.length(); i++) {
+                    if (calculation.charAt(i) == '*') {
+                        int j = i - 1;
+                        String reversedNumber = "";
+                        while (j >= 0) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/') {
+                                break;
+                            }
+                            reversedNumber += calculation.charAt(j);
+                            j--;
+                        }
+                        prevNumberString = "";
+                        for (int k = reversedNumber.length() - 1; k >= 0; k--) {
+                            prevNumberString += reversedNumber.charAt(k);
+                        }
+                        j = i + 1;
+                        nextNumberString = "";
+                        while (j < calculation.length()) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/' || calculation.charAt(j) == '^') {
+                                break;
+                            }
+                            nextNumberString += calculation.charAt(j);
+                            j++;
+                        }
+                        prevNumber = Integer.parseInt(prevNumberString);
+                        nextNumber = Integer.parseInt(nextNumberString);
+                        result = prevNumber * nextNumber;
+                        resultString = Integer.toString(result);
+                        calculation = calculation.replace(prevNumberString + "*" + nextNumberString, resultString);
+                    }
+                }
+                for (int i = 0; i < calculation.length(); i++) {
+                    if (calculation.charAt(i) == '+') {
+                        int j = i - 1;
+                        String reversedNumber = "";
+                        while (j >= 0) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/') {
+                                break;
+                            }
+                            reversedNumber += calculation.charAt(j);
+                            j--;
+                        }
+                        prevNumberString = "";
+                        for (int k = reversedNumber.length() - 1; k >= 0; k--) {
+                            prevNumberString += reversedNumber.charAt(k);
+                        }
+                        j = i + 1;
+                        nextNumberString = "";
+                        while (j < calculation.length()) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/' || calculation.charAt(j) == '^') {
+                                break;
+                            }
+                            nextNumberString += calculation.charAt(j);
+                            j++;
+                        }
+                        prevNumber = Integer.parseInt(prevNumberString);
+                        nextNumber = Integer.parseInt(nextNumberString);
+                        result = prevNumber + nextNumber;
+                        resultString = Integer.toString(result);
+                        calculation = calculation.replace(prevNumberString + "+" + nextNumberString, resultString);
+                    }
+                }
+                for (int i = 0; i < calculation.length(); i++) {
+                    if (calculation.charAt(i) == '-') {
+                        int j = i - 1;
+                        String reversedNumber = "";
+                        while (j >= 0) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/') {
+                                break;
+                            }
+                            reversedNumber += calculation.charAt(j);
+                            j--;
+                        }
+                        prevNumberString = "";
+                        for (int k = reversedNumber.length() - 1; k >= 0; k--) {
+                            prevNumberString += reversedNumber.charAt(k);
+                        }
+                        j = i + 1;
+                        nextNumberString = "";
+                        while (j < calculation.length()) {
+                            if (calculation.charAt(j) == '+' || calculation.charAt(j) == '*' || calculation.charAt(j) == '-' || calculation.charAt(j) == '/' || calculation.charAt(j) == '^' || calculation.charAt(j) == '=') {
+                                break;
+                            }
+                            nextNumberString += calculation.charAt(j);
+                            j++;
+                        }
+                        prevNumber = Integer.parseInt(prevNumberString);
+                        nextNumber = Integer.parseInt(nextNumberString);
+                        result = prevNumber - nextNumber;
+                        resultString = Integer.toString(result);
+                        calculation = calculation.replace(prevNumberString + "-" + nextNumberString, resultString);
+                    }
                 }
             }
-            cal.setText(c);
-            for (int i = 0 ; i < c.length() ; i++) {
-                if (c.charAt(i) == '/') {
-                    int j = i - 1 ; String x = "" ;
-                    while (j >= 0) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/') {
-                            break ;
-                        }
-                        x += c.charAt(j) ; j-- ;
-                    }
-                    p = "" ;
-                    for (int k = x.length() - 1 ; k >= 0 ; k--) { p += x.charAt(k) ; }
-                    j = i + 1 ; n = "" ;
-                    while (j < c.length()) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/' || c.charAt(j) == '^' || c.charAt(j) == '=') {
-                            break ;
-                        }
-                        n += c.charAt(j) ; j++ ;
-                    }
-                    prev = Integer.parseInt(p) ; next = Integer.parseInt(n) ;
-                    re = prev/next ; r = Integer.toString(re) ;
-                    c = c.replace(p + "/" + n, r) ;
-                }
+            catch (Exception e){
+                prevNumber = 0; nextNumber = 0 ; calculation = "" ; result = 0 ; prevNumberString = "" ; nextNumberString = "" ; resultString = "" ;
+                calculations.setText("");
+                results.setText("Error");
+                return ;
             }
-            cal.setText(c);
-            for (int i = 0 ; i < c.length() ; i++) {
-                if (c.charAt(i) == '*') {
-                    int j = i - 1 ; String x = "" ;
-                    while (j >= 0) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/') {
-                            break ;
-                        }
-                        x += c.charAt(j) ; j-- ;
-                    }
-                    p = "" ;
-                    for (int k = x.length() - 1 ; k >= 0 ; k--) { p += x.charAt(k) ; }
-                    j = i + 1 ; n = "" ;
-                    while (j < c.length()) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/' || c.charAt(j) == '^' || c.charAt(j) == '=') {
-                            break ;
-                        }
-                        n += c.charAt(j) ; j++ ;
-                    }
-                    prev = Integer.parseInt(p) ; next = Integer.parseInt(n) ;
-                    re = prev*next ; r = Integer.toString(re) ;
-                    c = c.replace(p + "*" + n, r) ;
-                }
-            }
-            cal.setText(c);
-            for (int i = 0 ; i < c.length() ; i++) {
-                if (c.charAt(i) == '+') {
-                    int j = i - 1 ; String x = "" ;
-                    while (j >= 0) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/') {
-                            break ;
-                        }
-                        x += c.charAt(j) ; j-- ;
-                    }
-                    p = "" ;
-                    for (int k = x.length() - 1 ; k >= 0 ; k--) { p += x.charAt(k) ; }
-                    j = i + 1 ; n = "" ;
-                    while (j < c.length()) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/' || c.charAt(j) == '^' || c.charAt(j) == '=') {
-                            break ;
-                        }
-                        n += c.charAt(j) ; j++ ;
-                    }
-                    prev = Integer.parseInt(p) ; next = Integer.parseInt(n) ;
-                    re = prev + next ; r = Integer.toString(re) ;
-                    c = c.replace(p + "+" + n, r) ;
-                }
-            }
-            cal.setText(c);
-            for (int i = 0 ; i < c.length() ; i++) {
-                if (c.charAt(i) == '-') {
-                    int j = i - 1 ; String x = "" ;
-                    while (j >= 0) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/') {
-                            break ;
-                        }
-                        x += c.charAt(j) ; j-- ;
-                    }
-                    p = "" ;
-                    for (int k = x.length() - 1 ; k >= 0 ; k--) { p += x.charAt(k) ; }
-                    j = i + 1 ; n = "" ;
-                    while (j < c.length()) {
-                        if (c.charAt(j) == '+' || c.charAt(j) == '*' || c.charAt(j) == '-' || c.charAt(j) == '/' || c.charAt(j) == '^' || c.charAt(j) == '=') {
-                            break ;
-                        }
-                        n += c.charAt(j) ; j++ ;
-                    }
-                    prev = Integer.parseInt(p) ; next = Integer.parseInt(n) ;
-                    re = prev - next ; r = Integer.toString(re) ;
-                    c = c.replace(p + "-" + n, r) ;
-                }
-            }
-            cal.setText(c);
-
-            r = Integer.toString(re) ;
-            res.setText(r);
+            calculations.setText(""); calculation = "" ;
+            results.setText(resultString);
+            return ;
         }
-        cal.setText(c);
+        else {
+            calculation += buttonText;
+        }
+        calculations.setText(calculation);
     }
 }
