@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+        <EditText
+            android:id="@+id/calc"
+            android:layout_width="220dp"
+            android:layout_height="70dp"
+            android:text="8*5/6^49"
+            android:textSize="45dp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/black">
+        </EditText>
+
+        <EditText
+            android:id="@+id/result"
+            android:layout_width="405dp"
+            android:layout_height="70dp"
+            android:text ="= 54654"
+            android:textSize="45dp"
+            android:textAlignment="textEnd"
+            android:textColor="@color/black">
+        </EditText>
+
+    </RelativeLayout>
+
+</RelativeLayout>
